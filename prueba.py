@@ -36,7 +36,7 @@ def iniciarpantalla():
 		return screen
 
 def guardararchivo(lista,nom):
-	x = open(nom,'w')
+	x = open('puntajes/'+nom,'w')
 	pickle.dump(lista, x)
 
 
@@ -48,13 +48,16 @@ def guardarpuntaje(obj, punt, nombre):
 	for obj in lista:
 		if obj[1]< nom[1]:
 			aux=nom[:]
-			nom=obj[:]
-			obj=aux[:]			
+			nom[0]=obj[0]
+			nom[1]=obj[1]
+			obj[0]=aux[0]
+			obj[1]=aux[1]				
 	guardararchivo(lista,nombre)
 			
 def compararpuntaje(punt, nom):
 	nombre=	"puntajes/"+nom
 	lista=Funciones.abrirarchivo(nombre)
+	
 	for obj in lista:
 		if obj[1] < punt:
 			return True
@@ -65,6 +68,42 @@ def confondo(screen, band, fondo):
 		screen.fill(white)
 	else:
 		screen.blit(fondo, (0,0))
+
+def mostrarpuntajes(nom, screen):
+	nombre= nombre=	"puntajes/"+nom
+	lista=Funciones.abrirarchivo(nombre)
+	fon = pygame.font.SysFont(None, 40)
+	listo=Option("Volver", (340,285))
+	band = False
+	try:
+		fondo = pygame.image.load("image/mapa-mundi.jpg")
+	except pygame.error:
+		band = True	
+	done=False
+	while not done:
+		x=250
+		y=50
+		cont=0
+		pygame.event.pump()
+		confondo(screen, band, fondo)
+		for puntajes in lista:
+			cont+=1
+			if cont == 6:
+				x=450
+				y=50
+			texto = fon.render(str(puntajes[0])+' '+str(puntajes[1]), True, (0,0,0))
+			screen.blit(texto, (x, y))
+			y+=50
+		if listo.rect.collidepoint(pygame.mouse.get_pos()):
+			listo.hovered = True	
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					done = True
+					break
+				if(event.type == pygame.MOUSEBUTTONDOWN):
+					done=True	
+		listo.draw()		
+		pygame.display.update()
 
 def escribirnombre(screen,puntaje,nombre):
 	band = False

@@ -157,11 +157,37 @@ def borrarportiempo(lista, lista2):
 	lista.remove(obje)
 	lista2.remove(obje)
 	
-def confondo(screen, band, fondo):
+def confondo(screen):
+	band=False
+	try:
+		fondo = pygame.image.load("image/mapa-mundi.jpg")
+	except pygame.error:
+		band = True
 	if band:
 		screen.fill(white)
 	else:
 		screen.blit(fondo, (0,0))
+
+def terminarnivel(score, nom, screen):	
+	siguiente = True
+	highscore=prueba.compararpuntaje(score, nom)
+	fon = pygame.font.SysFont(None, 30)
+	while siguiente:
+		if highscore:
+			texto = fon.render('Su puntaje es: ' + str(score)+' usted a alcanzado un maximo puntaje', True, black)
+			texto1 = fon.render('Haga click para continuar', True, black)
+		else:
+			texto = fon.render('Su puntaje es: ' + str(score), True, black)
+			texto1 = fon.render('Haga click para continuar', True, black)	
+		for event in pygame.event.get():
+			confondo(screen)
+			screen.blit(texto, (150, 150))
+			screen.blit(texto1, (280, 330))
+			pygame.display.flip()
+			if(event.type == pygame.MOUSEBUTTONDOWN):
+				if highscore:
+					prueba.escribirnombre(screen, score, nom)
+				siguiente = False
 
 def nivel(nom, score, screen, cantidad):	
 	listaobjetos = []
@@ -180,13 +206,10 @@ def nivel(nom, score, screen, cantidad):
 	reloj = time.time()
 	combo = ''
 	tiempoborrar = 30
-	band = False
-	try:
-		fondo = pygame.image.load("image/mapa-mundi.jpg")
-	except pygame.error:
-		band = True
+	confondo(screen)
 	# -------- Main Program Loop -----------
 	while listaobjetos and not done:
+		confondo(screen)
 		puntaje = fon.render(str(score), True, black)
 		seborra = fon.render('Se borra en', True, black)
 		tborrar = fon.render(str(tiempoborrar), True, black)
@@ -197,7 +220,7 @@ def nivel(nom, score, screen, cantidad):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				done = True 
-			confondo(screen, band, fondo)
+			confondo(screen)
 			pos = pygame.mouse.get_pos()
 			player.rect.x = pos[0]
 			player.rect.y = pos[1]
@@ -240,7 +263,7 @@ def nivel(nom, score, screen, cantidad):
 							aux.mostrarlomo()
 							block.mostrarlomo()
 							aux = None
-		if tiempoborrar == 0:
+		if tiempoborrar == 25:
 			borrarportiempo(listaobjetos, block_list)
 			tiempoborrar = 30
 		screen.blit(com, (10, 100))
@@ -251,22 +274,6 @@ def nivel(nom, score, screen, cantidad):
 		block_list.draw(screen)
 		clock.tick(30)
 		pygame.display.flip()
-	siguiente = True
-	highscore=prueba.compararpuntaje(score, nom)
-	while siguiente:
-		if highscore:
-			texto = fon.render('Su puntaje es: ' + str(score)+' usted a alcanzado un maximo puntaje', True, black)
-			texto1 = fon.render('Haga click para continuar', True, black)
-		else:
-			texto = fon.render('Su puntaje es: ' + str(score), True, black)
-			texto1 = fon.render('Haga click para continuar', True, black)	
-		for event in pygame.event.get():
-			confondo(screen, band, fondo)
-			screen.blit(texto, (150, 150))
-			screen.blit(texto1, (280, 330))
-			pygame.display.flip()
-			if(event.type == pygame.MOUSEBUTTONDOWN):
-				if highscore:
-					prueba.escribirnombre(screen, score, nom)
-				siguiente = False
+		pygame.display.update()
+
 	return score

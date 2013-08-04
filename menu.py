@@ -1,6 +1,7 @@
 
 import pygame
 import Funciones
+import prueba
 from Botons import Option
 
 def iniciarpantalla():
@@ -35,13 +36,17 @@ def opcioncantidad(nom):
 					if(event.type == pygame.MOUSEBUTTONDOWN):
 						if option.text == "4":
 							score = Funciones.nivel(nom, score, screen, cantidades[0])
+							Funciones.terminarnivel(score, nom, screen)
 						elif option.text == "8":
 							score = Funciones.nivel(nom, score, screen, cantidades[1])
+							Funciones.terminarnivel(score, nom, screen)
 						elif option.text == "12":
 							score = Funciones.nivel(nom, score, screen, cantidades[2])
+							Funciones.terminarnivel(score, nom, screen)
 						elif option.text == "Todos":
 							for i in cantidades:
 								score = Funciones.nivel(nom, score, screen, i)
+							Funciones.terminarnivel(score, nom, screen)	
 						elif option.text == "Volver":
 							done=True		
 			else:
@@ -79,6 +84,34 @@ def opcionjugar():
 			score = 0
 		pygame.display.update()		
 
+def opcionpuntajes():
+	done = False
+	options = [Option("Provincias", (340, 105)), Option("Sudamerica", (335, 155)),
+		Option("Volver", (345, 205))]
+	while not done:
+		pygame.event.pump()
+		confondo(band)
+		for option in options:
+			if option.rect.collidepoint(pygame.mouse.get_pos()):
+				option.hovered = True
+				for event in pygame.event.get():
+					if event.type == pygame.QUIT:
+						done = True
+						break
+					if(event.type == pygame.MOUSEBUTTONDOWN):
+						if option.text == "Sudamerica":
+							nom = 'sudamerica'
+							prueba.mostrarpuntajes(nom, screen)
+						if option.text == "Provincias":
+							nom = 'provincias'
+							prueba.mostrarpuntajes(nom, screen)
+						if 	option.text == "Volver":
+							done=True
+			else:
+				option.hovered = False
+			option.draw()
+			score = 0
+		pygame.display.update()	
 screen = iniciarpantalla()
 band = False
 try:
@@ -108,11 +141,9 @@ while not done:
 				if(event.type == pygame.MOUSEBUTTONDOWN):
 					if option.text == "Jugar":
 						opcionjugar()
-						break
-					
-					
+						break					
 					if option.text == "Mejores Puntajes":
-						#mejorespuntajes()
+						opcionpuntajes()
 						break
 					#if 	option.text == "Opciones":
 					#	options = Opciones
