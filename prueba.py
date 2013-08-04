@@ -14,7 +14,7 @@ class Option2(Option):
 		
 	
 	def set_rend(self):
-		menu_font = pygame.font.Font(None, 40)
+		menu_font = pygame.font.Font(None, 80)
 		self.rend = menu_font.render(self.letra, True, self.get_color())
 	
 	def cambiarletra(self):
@@ -43,21 +43,22 @@ def guardararchivo(lista,nom):
 def guardarpuntaje(obj, punt, nombre):
 	nom=[obj[0].getletra()+obj[1].getletra()+obj[2].getletra(),punt]
 	lista=[]
-	lista=Funciones.abrirarchivo(nombre)
+	lista=Funciones.abrirarchivo('puntajes/'+nombre)
+	aux=[]
 	for obj in lista:
 		if obj[1]< nom[1]:
-			aux=nom
-			nom=obj
-			obj=aux
+			aux=nom[:]
+			nom=obj[:]
+			obj=aux[:]			
 	guardararchivo(lista,nombre)
 			
-def compararpuntaje(punt, nom, screen):
+def compararpuntaje(punt, nom):
 	nombre=	"puntajes/"+nom
 	lista=Funciones.abrirarchivo(nombre)
 	for obj in lista:
 		if obj[1] < punt:
-			escribirnombre(screen,punt,nombre)
-			break
+			return True
+	return False		
 
 def confondo(screen, band, fondo):
 	if band:
@@ -73,16 +74,15 @@ def escribirnombre(screen,puntaje,nombre):
 	except pygame.error:
 		band = True	
 	menu_font = pygame.font.Font(None, 40)
-	         		
-	options = [Option2("1", (140, 105)), Option2("2", (135, 155)),
-			Option2("3", (145, 205)),Option("listo",(145,265))]
-		
-	puntaje = 0
+	fon = pygame.font.SysFont(None, 40)         		
+	options = [Option2("1", (240, 205)), Option2("2", (340, 205)),
+			Option2("3", (440, 205)),Option("listo",(340,265))]
 	done = False
-
+	texto = fon.render('Haga clik en las letras para escribir su nombre', True, (0,0,0))
 	while not done:
 		pygame.event.pump()
 		confondo(screen, band, fondo)
+		screen.blit(texto, (100, 150))
 		for option in options:
 			if option.rect.collidepoint(pygame.mouse.get_pos()):
 				option.hovered = True

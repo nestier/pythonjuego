@@ -20,7 +20,7 @@ class Option(object):
 		if self.hovered:
 			return (255, 255, 255)
 		else:
-			return (100, 100, 100)
+			return (0, 0, 0)
 	
 	def set_rect(self):
 		self.set_rend()

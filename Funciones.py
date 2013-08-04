@@ -194,7 +194,6 @@ def nivel(nom, score, screen, cantidad):
 		if (time.time() - reloj) > 1:
 			reloj = time.time()
 			tiempoborrar -= 1
-		confondo(screen, band, fondo)
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				done = True 
@@ -253,16 +252,21 @@ def nivel(nom, score, screen, cantidad):
 		clock.tick(30)
 		pygame.display.flip()
 	siguiente = True
+	highscore=prueba.compararpuntaje(score, nom)
 	while siguiente:
-		texto = fon.render('Su puntaje es: ' + str(score), True, black)
-		
-		texto1 = fon.render('Haga click para continuar', True, black)
+		if highscore:
+			texto = fon.render('Su puntaje es: ' + str(score)+' usted a alcanzado un maximo puntaje', True, black)
+			texto1 = fon.render('Haga click para continuar', True, black)
+		else:
+			texto = fon.render('Su puntaje es: ' + str(score), True, black)
+			texto1 = fon.render('Haga click para continuar', True, black)	
 		for event in pygame.event.get():
-			screen.fill(white)
-			screen.blit(texto, (300, 300))
+			confondo(screen, band, fondo)
+			screen.blit(texto, (150, 150))
 			screen.blit(texto1, (280, 330))
 			pygame.display.flip()
 			if(event.type == pygame.MOUSEBUTTONDOWN):
-				prueba.compararpuntaje(score, nom, screen)
+				if highscore:
+					prueba.escribirnombre(screen, score, nom)
 				siguiente = False
 	return score
