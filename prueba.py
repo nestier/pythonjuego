@@ -1,12 +1,12 @@
 import pygame
 import pickle
 from Botons import Option
-
+import Funciones
 		
 class Option2(Option):
 
 	hovered = False
-    
+	
 	def __init__(self, text, pos):
 		self.letra='A'
 		self.cont=0	
@@ -14,6 +14,7 @@ class Option2(Option):
 		
 	
 	def set_rend(self):
+		menu_font = pygame.font.Font(None, 40)
 		self.rend = menu_font.render(self.letra, True, self.get_color())
 	
 	def cambiarletra(self):
@@ -34,55 +35,80 @@ def iniciarpantalla():
 		screen=pygame.display.set_mode([screen_width,screen_height])
 		return screen
 
-def confondo(band):
-	if band:
-		screen.fill((0, 0, 0))
-	else:
-		screen.blit(fondo, (0, 0))
+def guardararchivo(lista,nom):
+	x = open(nom,'w')
+	pickle.dump(lista, x)
 
-def guardarpuntaje(obj,punt):
+
+def guardarpuntaje(obj, punt, nombre):
 	nom=[obj[0].getletra()+obj[1].getletra()+obj[2].getletra(),punt]
-	print nom		
+	lista=[]
+	lista=Funciones.abrirarchivo(nombre)
+	for obj in lista:
+		if obj[1]< nom[1]:
+			aux=nom
+			nom=obj
+			obj=aux
+	guardararchivo(lista,nombre)
+			
+def compararpuntaje(punt, nom, screen):
+	nombre=	"puntajes/"+nom
+	lista=Funciones.abrirarchivo(nombre)
+	for obj in lista:
+		if obj[1] < punt:
+			escribirnombre(screen,punt,nombre)
+			break
 
-screen = iniciarpantalla()
-band = False
-try:
-	fondo = pygame.image.load("image/mapa-mundi.jpg")
-except pygame.error:
-	band = True	
-menu_font = pygame.font.Font(None, 40)
-         		
-options = [Option2("1", (140, 105)), Option2("2", (135, 155)),
-		Option2("3", (145, 205)),Option("listo",(145,265))]
+def confondo(screen, band, fondo):
+	if band:
+		screen.fill(white)
+	else:
+		screen.blit(fondo, (0,0))
+
+def escribirnombre(screen,puntaje,nombre):
+	band = False
+	clock = pygame.time.Clock()
+	try:
+		fondo = pygame.image.load("image/mapa-mundi.jpg")
+	except pygame.error:
+		band = True	
+	menu_font = pygame.font.Font(None, 40)
+	         		
+	options = [Option2("1", (140, 105)), Option2("2", (135, 155)),
+			Option2("3", (145, 205)),Option("listo",(145,265))]
 		
-puntaje = 0
-done = False
+	puntaje = 0
+	done = False
 
-while not done:
-	pygame.event.pump()
-	confondo(band)
-	for option in options:
-		if option.rect.collidepoint(pygame.mouse.get_pos()):
-			option.hovered = True
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					done = True
-					break
-				if(event.type == pygame.MOUSEBUTTONDOWN):
-					if option.text == "1":
-						option.cambiarletra()
+	while not done:
+		pygame.event.pump()
+		confondo(screen, band, fondo)
+		for option in options:
+			if option.rect.collidepoint(pygame.mouse.get_pos()):
+				option.hovered = True
+				for event in pygame.event.get():
+					if event.type == pygame.QUIT:
+						done = True
 						break
-					if option.text == "2":
-						option.cambiarletra()
-						break
-					if option.text == "3":
-						option.cambiarletra()
-						break
-					if option.text=='listo':
-						guardarpuntaje(options, puntaje)
-						done=True						
-		else:
-			option.hovered = False
-		option.draw()
-		score = 0
-	pygame.display.update()
+					if(event.type == pygame.MOUSEBUTTONDOWN):
+						if option.text == "1":
+							option.cambiarletra()
+							break
+						if option.text == "2":
+							option.cambiarletra()
+							break
+						if option.text == "3":
+							option.cambiarletra()
+							break
+						if option.text=='listo':
+							guardarpuntaje(options, puntaje, nombre)
+							done=True						
+			else:
+				option.hovered = False
+			
+			option.draw()
+			score = 0
+		pygame.display.flip()
+		clock.tick(30)	
+		pygame.display.update()
+	

@@ -3,6 +3,7 @@ import pygame
 import random
 import time
 import pickle
+import prueba
 black = (0, 0, 0)
 white = (255, 255, 255)
 red = (255, 0, 0)
@@ -84,7 +85,7 @@ def iniciarpantalla():
 
 def abrirarchivo(nom):
 	arch = []
-	x = open("nivel/"+nom,'r')
+	x = open(nom,'r')
 	arch = pickle.load(x)
 	x.close()
 	return arch
@@ -119,7 +120,7 @@ def crearcartas(nom, can):
 	tam = 100
 	rango = can / 2
 	cord = crearcordenadas(rango, tam , can)
-	parejas = abrirarchivo(nom)
+	parejas = abrirarchivo("nivel/"+nom)
 	aux = len(parejas) - 1
 	can = can - 1
 	for i in range(rango):
@@ -254,6 +255,7 @@ def nivel(nom, score, screen, cantidad):
 	siguiente = True
 	while siguiente:
 		texto = fon.render('Su puntaje es: ' + str(score), True, black)
+		
 		texto1 = fon.render('Haga click para continuar', True, black)
 		for event in pygame.event.get():
 			screen.fill(white)
@@ -261,5 +263,6 @@ def nivel(nom, score, screen, cantidad):
 			screen.blit(texto1, (280, 330))
 			pygame.display.flip()
 			if(event.type == pygame.MOUSEBUTTONDOWN):
+				prueba.compararpuntaje(score, nom, screen)
 				siguiente = False
 	return score

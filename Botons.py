@@ -3,7 +3,6 @@ import pygame
 class Option(object):
 
 	hovered = False
-    
 	def __init__(self, text, pos):
 		self.text = text
 		self.pos = pos
