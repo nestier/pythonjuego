@@ -1,8 +1,8 @@
 
 import pygame
-import Funciones
-import prueba
-from Botons import Option
+import funciones
+import puntajes
+from botons import Option
 
 def iniciarpantalla():
 		pygame.init()
@@ -35,18 +35,18 @@ def opcioncantidad(nom):
 						break
 					if(event.type == pygame.MOUSEBUTTONDOWN):
 						if option.text == "4":
-							score = Funciones.nivel(nom, score, screen, cantidades[0])
-							Funciones.terminarnivel(score, nom, screen)
+							score = funciones.nivel(nom, score, screen, cantidades[0])
+							funciones.terminarnivel(score, nom, screen)
 						elif option.text == "8":
-							score = Funciones.nivel(nom, score, screen, cantidades[1])
-							Funciones.terminarnivel(score, nom, screen)
+							score = funciones.nivel(nom, score, screen, cantidades[1])
+							funciones.terminarnivel(score, nom, screen)
 						elif option.text == "12":
-							score = Funciones.nivel(nom, score, screen, cantidades[2])
-							Funciones.terminarnivel(score, nom, screen)
+							score = funciones.nivel(nom, score, screen, cantidades[2])
+							funciones.terminarnivel(score, nom, screen)
 						elif option.text == "Todos":
 							for i in cantidades:
-								score = Funciones.nivel(nom, score, screen, i)
-							Funciones.terminarnivel(score, nom, screen)	
+								score = funciones.nivel(nom, score, screen, i)
+							funciones.terminarnivel(score, nom, screen)	
 						elif option.text == "Volver":
 							done=True		
 			else:
@@ -101,10 +101,10 @@ def opcionpuntajes():
 					if(event.type == pygame.MOUSEBUTTONDOWN):
 						if option.text == "Sudamerica":
 							nom = 'sudamerica'
-							prueba.mostrarpuntajes(nom, screen)
+							puntajes.mostrarpuntajes(nom, screen)
 						if option.text == "Provincias":
 							nom = 'provincias'
-							prueba.mostrarpuntajes(nom, screen)
+							puntajes.mostrarpuntajes(nom, screen)
 						if 	option.text == "Volver":
 							done=True
 			else:
