@@ -1,9 +1,10 @@
-
 import pygame
 import random
 import time
 import pickle
-import prueba
+import puntajes
+import error
+
 black = (0, 0, 0)
 white = (255, 255, 255)
 red = (255, 0, 0)
@@ -170,7 +171,7 @@ def confondo(screen):
 
 def terminarnivel(score, nom, screen):	
 	siguiente = True
-	highscore=prueba.compararpuntaje(score, nom)
+	highscore=puntajes.compararpuntaje(score, nom)
 	fon = pygame.font.SysFont(None, 30)
 	while siguiente:
 		if highscore:
@@ -186,94 +187,96 @@ def terminarnivel(score, nom, screen):
 			pygame.display.flip()
 			if(event.type == pygame.MOUSEBUTTONDOWN):
 				if highscore:
-					prueba.escribirnombre(screen, score, nom)
+					puntajes.escribirnombre(screen, score, nom)
 				siguiente = False
 
 def nivel(nom, score, screen, cantidad):	
-	listaobjetos = []
-	fon = pygame.font.SysFont(None, 30)
-	fuente = pygame.font.SysFont(None, 35)
-	sup = fon.render("PUNTOS", True, (0, 0, 0))
-	block_list = pygame.sprite.Group()
-	listaobjetos = crearcartas(nom, cantidad)
-	for objeto in listaobjetos:
-		block_list.add(objeto)
-	player = Block( 5, 5, '', '', False)
-	done = False
-	clock = pygame.time.Clock()
-	cont = 0
-	doble = 0
-	reloj = time.time()
-	combo = ''
-	tiempoborrar = 30
-	confondo(screen)
-	# -------- Main Program Loop -----------
-	while listaobjetos and not done:
+	try:	
+		listaobjetos = []
+		fon = pygame.font.SysFont(None, 30)
+		fuente = pygame.font.SysFont(None, 35)
+		sup = fon.render("PUNTOS", True, (0, 0, 0))
+		block_list = pygame.sprite.Group()
+		listaobjetos = crearcartas(nom, cantidad)
+		for objeto in listaobjetos:
+			block_list.add(objeto)
+		player = Block( 5, 5, '', '', False)
+		done = False
+		clock = pygame.time.Clock()
+		cont = 0
+		doble = 0
+		reloj = time.time()
+		combo = ''
+		tiempoborrar = 30
 		confondo(screen)
-		puntaje = fon.render(str(score), True, black)
-		seborra = fon.render('Se borra en', True, black)
-		tborrar = fon.render(str(tiempoborrar), True, black)
-		com = fon.render(combo, True, black)
-		if (time.time() - reloj) > 1:
-			reloj = time.time()
-			tiempoborrar -= 1
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				done = True 
+		# -------- Main Program Loop -----------
+		while listaobjetos and not done:
 			confondo(screen)
-			pos = pygame.mouse.get_pos()
-			player.rect.x = pos[0]
-			player.rect.y = pos[1]
-			if(event.type == pygame.MOUSEBUTTONDOWN):
-				blocks_hit_list = pygame.sprite.spritecollide(player, block_list, False)
-				if blocks_hit_list:
-					block = blocks_hit_list[0]
-					cont += 1
-					block.mostrarcara()
-					if cont != 2:
-						aux = block
-						block_list.draw(screen)
-					else:
-						cont = 0
-						screen.blit(com, (10, 100))
-						screen.blit(sup, (30, 0))
-						screen.blit(puntaje, (60, 20))
-						screen.blit(seborra, (10, 50))
-						screen.blit(tborrar, (50, 70))
-						block_list.draw(screen)
-						s = time.time()
-						e = s + 0.35
-						while time.time() < e :
-							pygame.display.flip()
-							clock.tick(30)
-						if time.time() > doble + 3:
-							 combo = ''
-						if block.comparar(aux) :
-							combo = 'COMBOx2'
-							if time.time() < doble + 3:
-								score += 100
-							doble = time.time()
-							score += 100
-							block_list.remove(aux)
-							block_list.remove(block)
-							listaobjetos.remove(aux)
-							listaobjetos.remove(block)
-							aux = None
+			puntaje = fon.render(str(score), True, black)
+			seborra = fon.render('Se borra en', True, black)
+			tborrar = fon.render(str(tiempoborrar), True, black)
+			com = fon.render(combo, True, black)
+			if (time.time() - reloj) > 1:
+				reloj = time.time()
+				tiempoborrar -= 1
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					done = True 
+				confondo(screen)
+				pos = pygame.mouse.get_pos()
+				player.rect.x = pos[0]
+				player.rect.y = pos[1]
+				if(event.type == pygame.MOUSEBUTTONDOWN):
+					blocks_hit_list = pygame.sprite.spritecollide(player, block_list, False)
+					if blocks_hit_list:
+						block = blocks_hit_list[0]
+						cont += 1
+						block.mostrarcara()
+						if cont != 2:
+							aux = block
+							block_list.draw(screen)
 						else:
-							aux.mostrarlomo()
-							block.mostrarlomo()
-							aux = None
-		if tiempoborrar == 0:
-			borrarportiempo(listaobjetos, block_list)
-			tiempoborrar = 30
-		screen.blit(com, (10, 100))
-		screen.blit(seborra, (10, 50))
-		screen.blit(tborrar, (50, 70))
-		screen.blit(sup, (30, 0))
-		screen.blit(puntaje, (60, 20))
-		block_list.draw(screen)
-		clock.tick(30)
-		pygame.display.flip()
-		pygame.display.update()
-
-	return score
+							cont = 0
+							screen.blit(com, (10, 100))
+							screen.blit(sup, (30, 0))
+							screen.blit(puntaje, (60, 20))
+							screen.blit(seborra, (10, 50))
+							screen.blit(tborrar, (50, 70))
+							block_list.draw(screen)
+							s = time.time()
+							e = s + 0.35
+							while time.time() < e :
+								pygame.display.flip()
+								clock.tick(30)
+							if time.time() > doble + 3:
+								combo = ''
+							if block.comparar(aux) :
+								combo = 'COMBOx2'
+								if time.time() < doble + 3:
+									score += 100
+								doble = time.time()
+								score += 100
+								block_list.remove(aux)
+								block_list.remove(block)
+								listaobjetos.remove(aux)
+								listaobjetos.remove(block)
+								aux = None
+							else:
+								aux.mostrarlomo()
+								block.mostrarlomo()
+								aux = None
+			if tiempoborrar == 0:
+				borrarportiempo(listaobjetos, block_list)
+				tiempoborrar = 30
+			screen.blit(com, (10, 100))
+			screen.blit(seborra, (10, 50))
+			screen.blit(tborrar, (50, 70))
+			screen.blit(sup, (30, 0))
+			screen.blit(puntaje, (60, 20))
+			block_list.draw(screen)
+			clock.tick(30)
+			pygame.display.flip()
+			pygame.display.update()
+		return score
+	except :
+		error.mensaje(screen)	

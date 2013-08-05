@@ -1,7 +1,8 @@
-
 import pygame
 import funciones
 import puntajes
+import explicacion
+import error
 from botons import Option
 
 def iniciarpantalla():
@@ -63,23 +64,23 @@ def opcionjugar():
 		pygame.event.pump()
 		confondo(band)
 		for option in options:
-			if option.rect.collidepoint(pygame.mouse.get_pos()):
-				option.hovered = True
-				for event in pygame.event.get():
-					if event.type == pygame.QUIT:
-						done = True
-						break
-					if(event.type == pygame.MOUSEBUTTONDOWN):
-						if option.text == "Sudamerica":
-							nom = 'sudamerica'
-							opcioncantidad(nom)
-						if option.text == "Provincias":
-							nom = 'provincias'
-							opcioncantidad(nom)
-						if 	option.text == "Volver":
-							done=True
-			else:
-				option.hovered = False
+			for event in pygame.event.get():
+				if option.rect.collidepoint(pygame.mouse.get_pos()):
+					option.hovered = True
+				if event.type == pygame.QUIT:
+					done = True
+					break
+				if(event.type == pygame.MOUSEBUTTONDOWN):
+					if option.text == "Sudamerica":
+						nom = 'sudamerica'
+						opcioncantidad(nom)
+					if option.text == "Provincias":
+						nom = 'provincias'
+						opcioncantidad(nom)
+					if 	option.text == "Volver":
+						done=True
+				else:
+					option.hovered = False
 			option.draw()
 			score = 0
 		pygame.display.update()		
@@ -124,37 +125,42 @@ menu_font = pygame.font.Font(None, 40)
 
         		
 options = [Option("Jugar", (340, 105)), Option("Mejores Puntajes", (335, 155)),
-		Option("Opciones", (345, 205))]
+		Option("Opciones", (345, 205)), Option("Como Jugar", (345, 255))]
 
 score = 0
 done = False
 while not done:
 	pygame.event.pump()
 	confondo(band)
-	for option in options:
-		if option.rect.collidepoint(pygame.mouse.get_pos()):
-			option.hovered = True
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					done = True
-					break
-				if(event.type == pygame.MOUSEBUTTONDOWN):
-					if option.text == "Jugar":
-						opcionjugar()
-						break					
-					if option.text == "Mejores Puntajes":
-						opcionpuntajes()
+	try:
+		for option in options:
+			if option.rect.collidepoint(pygame.mouse.get_pos()):
+				option.hovered = True
+				for event in pygame.event.get():
+					if event.type == pygame.QUIT:
+						done = True
 						break
-					#if 	option.text == "Opciones":
-					#	options = Opciones
-					#if 	option.text == "Prendido":
-					#	option.text = "Apagado"
-					#elif option.text == "Apagado":
-					#	option.text = "Prendido"
-					
-		else:
-			option.hovered = False
-		option.draw()
-		score = 0
+					if(event.type == pygame.MOUSEBUTTONDOWN):
+						if option.text == "Jugar":
+							opcionjugar()
+							break					
+						if option.text == "Mejores Puntajes":
+							opcionpuntajes()
+							break
+						if option.text == "Como Jugar":
+							explicacion.comojugar(screen)	
+						#if 	option.text == "Opciones":
+						#	options = Opciones
+						#if 	option.text == "Prendido":
+						#	option.text = "Apagado"
+						#elif option.text == "Apagado":
+						#	option.text = "Prendido"
+						
+			else:
+				option.hovered = False
+			option.draw()
+			score = 0
+	except :
+		error.mensaje(screen)	
 	pygame.display.update()
 pygame.quit()    
